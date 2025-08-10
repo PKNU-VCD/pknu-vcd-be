@@ -1,6 +1,15 @@
+spring.application.name: pknu-vcd-server
+spring.profiles.active: local
+
 spring:
   jpa:
     open-in-view: false
+
+---
+spring.config.activate.on-profile: local
+
+spring:
+  jpa:
     properties:
       hibernate:
         format_sql: true
@@ -30,3 +39,6 @@ aws:
     secret-key: ${AWS_S3_SECRET_KEY}
     bucketName: ${AWS_S3_BUCKET_NAME}
     region: ${AWS_S3_REGION} # ap-northeast-2
+
+---
+spring.config.activate.on-profile: prod

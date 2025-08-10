@@ -3,21 +3,18 @@ package pknu.vcd.server.domain
 import jakarta.persistence.*
 
 @Entity
-class ProjectImage(
+class GuestBookEntry(
     @Column(nullable = false)
-    val filePath: String,
+    val content: String,
 
     @Column(nullable = false)
-    val originalFileName: String,
+    val clientIp: String,
 
     @Column(nullable = false)
-    val displayOrder: Int,
-
-    @Column(nullable = false)
-    val isThumbnail: Boolean,
+    val banned: Boolean = false,
 ) : AuditableEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
+    var id: Long = 0
 }

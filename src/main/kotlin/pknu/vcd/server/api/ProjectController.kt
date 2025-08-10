@@ -15,6 +15,11 @@ class ProjectController(
         // TODO: 프로젝트 목록
     }
 
+    @GetMapping("/projects/categories")
+    fun getProjectCategories() {
+
+    }
+
     @GetMapping("/projects/{projectId}")
     fun getProjectDetails(
         @PathVariable projectId: Long,

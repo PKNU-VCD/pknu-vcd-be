@@ -1,6 +1,6 @@
 package pknu.vcd.server.domain
 
-enum class ProjectType {
+enum class Category {
 
     BRANDING,
     PACKAGE,

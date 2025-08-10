@@ -1,13 +1,13 @@
 package pknu.vcd.server.application.dto
 
-import pknu.vcd.server.domain.ProjectType
+import pknu.vcd.server.domain.Category
 
 data class RegisterProjectRequest(
     val designer: Designer,
     val designerName: DesignerName,
     val projectName: ProjectName,
     val description: Description,
-    val projectType: ProjectType,
+    val category: Category,
 ) {
 
     data class Designer(

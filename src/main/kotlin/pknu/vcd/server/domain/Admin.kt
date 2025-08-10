@@ -9,7 +9,7 @@ class Admin(
 
     @Column(nullable = false)
     val password: String,
-) {
+) : AuditableEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

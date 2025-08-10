@@ -27,8 +27,8 @@ class Project(
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val projectType: ProjectType,
-) {
+    val category: Category,
+)  : AuditableEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
