@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS admin
     updated_at TIMESTAMP(6) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS guest_book_entry
+CREATE TABLE IF NOT EXISTS guest_book
 (
     id         SERIAL PRIMARY KEY,
-    content    TEXT         NOT NULL,
+    content    VARCHAR(200) NOT NULL,
     client_ip  VARCHAR(50)  NOT NULL,
     banned     BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP(6) NOT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE IF NOT EXISTS project
 
 CREATE TABLE IF NOT EXISTS project_file
 (
-    id         SERIAL PRIMARY KEY,
-    project_id BIGINT       NOT NULL,
-    file_url   VARCHAR(255) NOT NULL,
-    display_order  INTEGER      NOT NULL,
-    created_at TIMESTAMP(6) NOT NULL,
-    updated_at TIMESTAMP(6) NOT NULL
+    id            SERIAL PRIMARY KEY,
+    project_id    BIGINT       NOT NULL,
+    file_url      VARCHAR(255) NOT NULL,
+    display_order INTEGER      NOT NULL,
+    created_at    TIMESTAMP(6) NOT NULL,
+    updated_at    TIMESTAMP(6) NOT NULL
 );

@@ -3,7 +3,7 @@ package pknu.vcd.server.domain
 import jakarta.persistence.*
 
 @Entity
-class GuestBookEntry(
+class GuestBook(
     @Column(nullable = false)
     val content: String,
 

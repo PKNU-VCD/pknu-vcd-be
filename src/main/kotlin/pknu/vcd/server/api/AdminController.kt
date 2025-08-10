@@ -2,20 +2,22 @@ package pknu.vcd.server.api
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pknu.vcd.server.application.ProjectFileService
+import pknu.vcd.server.application.PresignedUrlService
+import pknu.vcd.server.application.ProjectQueryService
 import pknu.vcd.server.application.ProjectService
 import pknu.vcd.server.application.dto.*
-import pknu.vcd.server.domain.dto.ProjectSummaryDto
+import pknu.vcd.server.domain.dto.ProjectAdminSummaryDto
 
 @RestController
 class AdminController(
     private val projectService: ProjectService,
-    private val projectFileService: ProjectFileService,
+    private val projectQueryService: ProjectQueryService,
+    private val presignedUrlService: PresignedUrlService,
 ) {
 
     @GetMapping("/admin/projects")
-    fun getProjectSummaries(): ResponseEntity<List<ProjectSummaryDto>> {
-        val response = projectService.getAllProjectSummaries()
+    fun getAllProjectAdminSummaries(): ResponseEntity<List<ProjectAdminSummaryDto>> {
+        val response = projectQueryService.getAllProjectAdminSummaries()
 
         return ResponseEntity.ok(response)
     }
@@ -24,7 +26,7 @@ class AdminController(
     fun getProjectsDetails(
         @PathVariable projectId: Long,
     ): ResponseEntity<ProjectDetailsResponse> {
-        val response = projectService.getProjectDetails(projectId)
+        val response = projectQueryService.getProjectDetails(projectId)
 
         return ResponseEntity.ok(response)
     }
@@ -52,13 +54,13 @@ class AdminController(
     fun createPresignedUrl(
         @RequestBody request: ProjectPresignedUrlRequest,
     ): PresignedUrlResponse {
-        return projectFileService.createPresignedUrl(request)
+        return presignedUrlService.createPresignedUrl(request)
     }
 
     @PostMapping("/admin/projects/presigned-url/batch")
     fun createPresignedUrls(
         @RequestBody request: ProjectPresignedUrlBatchRequest,
     ): List<PresignedUrlResponse> {
-        return projectFileService.createPresignedUrls(request)
+        return presignedUrlService.createPresignedUrls(request)
     }
 }

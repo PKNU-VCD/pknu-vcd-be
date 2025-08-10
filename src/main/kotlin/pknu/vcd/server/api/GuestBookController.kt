@@ -5,34 +5,35 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import pknu.vcd.server.api.dto.CreateGuestBookEntryWebRequest
+import pknu.vcd.server.application.GuestBookRateLimiter
 import pknu.vcd.server.application.GuestBookService
-import pknu.vcd.server.application.dto.CreateGuestBookEntryResponse
-import pknu.vcd.server.domain.dto.GuestBookEntryDto
+import pknu.vcd.server.application.dto.CreateGuestBookRequest
+import pknu.vcd.server.application.dto.CreateGuestBookResponse
+import pknu.vcd.server.domain.dto.GuestBookSummaryDto
 
 @RestController
 class GuestBookController(
     private val guestBookService: GuestBookService,
+    private val guestBookRateLimiter: GuestBookRateLimiter,
 ) {
+
+    @GetMapping("/guestbooks")
+    fun getGuestBooks(): List<GuestBookSummaryDto> {
+        return guestBookService.getGuestBooks()
+    }
 
     @PostMapping("/guestbooks")
     fun createGuestBook(
-        @RequestBody request: CreateGuestBookEntryWebRequest,
+        @RequestBody request: CreateGuestBookRequest,
         httpServletRequest: HttpServletRequest,
-    ): CreateGuestBookEntryResponse {
+    ): CreateGuestBookResponse {
         val clientIp = extractClientIp(httpServletRequest)
-        println(clientIp)
-        val appRequest = request.toAppRequest(clientIp)
+        guestBookRateLimiter.check(clientIp)
 
-        return guestBookService.createGuestBookEntry(appRequest)
+        return guestBookService.createGuestBook(request, clientIp)
     }
 
-    @GetMapping("/guestbooks")
-    fun getGuestBooks(): List<GuestBookEntryDto> {
-        return guestBookService.getGuestBookEntries();
-    }
-
-    fun extractClientIp(request: HttpServletRequest): String {
+    private fun extractClientIp(request: HttpServletRequest): String {
         val xfHeader = request.getHeader("X-Forwarded-For")
         if (xfHeader.isNullOrEmpty()) {
             return request.remoteAddr

@@ -1,13 +1,13 @@
-package pknu.vcd.server.application
+package pknu.vcd.server.infra.security
 
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.stereotype.Service
-import pknu.vcd.server.domain.AdminRepository
+import org.springframework.stereotype.Component
+import pknu.vcd.server.domain.repository.AdminRepository
 
-@Service
+@Component
 class UserDetailsServiceImpl(
     private val adminRepository: AdminRepository,
 ) : UserDetailsService {

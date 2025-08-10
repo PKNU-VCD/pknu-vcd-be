@@ -1,8 +1,9 @@
-package pknu.vcd.server.domain
+package pknu.vcd.server.domain.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import pknu.vcd.server.domain.ProjectFile
 
 interface ProjectFileRepository : JpaRepository<ProjectFile, Long> {
 

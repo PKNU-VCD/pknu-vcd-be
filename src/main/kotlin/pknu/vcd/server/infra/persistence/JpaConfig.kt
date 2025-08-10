@@ -1,4 +1,4 @@
-package pknu.vcd.server.infra
+package pknu.vcd.server.infra.persistence
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing

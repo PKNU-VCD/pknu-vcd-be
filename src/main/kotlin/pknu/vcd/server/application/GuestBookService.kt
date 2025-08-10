@@ -2,49 +2,31 @@ package pknu.vcd.server.application
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import pknu.vcd.server.application.dto.CreateGuestBookEntryRequest
-import pknu.vcd.server.application.dto.CreateGuestBookEntryResponse
-import pknu.vcd.server.domain.GuestBookEntry
-import pknu.vcd.server.domain.GuestBookEntryRepository
-import pknu.vcd.server.domain.dto.GuestBookEntryDto
-import java.time.Duration
-import java.time.LocalDateTime
+import pknu.vcd.server.application.dto.CreateGuestBookRequest
+import pknu.vcd.server.application.dto.CreateGuestBookResponse
+import pknu.vcd.server.domain.GuestBook
+import pknu.vcd.server.domain.repository.GuestBookRepository
+import pknu.vcd.server.domain.dto.GuestBookSummaryDto
 
 @Service
 class GuestBookService(
-    private val guestBookEntryRepository: GuestBookEntryRepository,
+    private val guestBookRepository: GuestBookRepository,
 ) {
 
-    @Transactional
-    fun createGuestBookEntry(request: CreateGuestBookEntryRequest): CreateGuestBookEntryResponse {
-        checkRateLimit(request.clientIp)
-
-        val guestBookEntry = GuestBookEntry(content = request.content, clientIp = request.clientIp)
-        val savedGuestBookEntry = guestBookEntryRepository.save(guestBookEntry)
-
-        return CreateGuestBookEntryResponse(
-            id = savedGuestBookEntry.id,
-            content = savedGuestBookEntry.content,
-            createdAt = savedGuestBookEntry.createdAt,
-        )
-    }
-
     @Transactional(readOnly = true)
-    fun getGuestBookEntries(): List<GuestBookEntryDto> {
-        return guestBookEntryRepository.findAllByBannedFalse()
+    fun getGuestBooks(): List<GuestBookSummaryDto> {
+        return guestBookRepository.findAllByBannedFalse()
     }
 
-    private fun checkRateLimit(clientIp: String) {
-        val now = LocalDateTime.now()
-        val recent = guestBookEntryRepository.findTopByClientIpAndCreatedAtAfterOrderByCreatedAtDesc(
-            clientIp = clientIp,
-            createdAt = now.minusSeconds(60)
-        )
+    @Transactional
+    fun createGuestBook(request: CreateGuestBookRequest, clientIp: String): CreateGuestBookResponse {
+        val guestBook = GuestBook(content = request.content, clientIp = clientIp)
+        val savedGuestBook = guestBookRepository.save(guestBook)
 
-        if (recent != null) {
-            val elapsedSeconds = Duration.between(recent.createdAt, now).seconds
-            val remainingSeconds = (60 - elapsedSeconds).coerceAtLeast(0)
-            throw IllegalStateException("방명록 작성은 1분에 한 번만 가능합니다. 남은 시간: ${remainingSeconds}초")
-        }
+        return CreateGuestBookResponse(
+            guestBookId = savedGuestBook.id,
+            content = savedGuestBook.content,
+            createdAt = savedGuestBook.createdAt,
+        )
     }
 }

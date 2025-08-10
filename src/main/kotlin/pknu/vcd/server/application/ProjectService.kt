@@ -1,18 +1,16 @@
 package pknu.vcd.server.application
 
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.Caching
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import pknu.vcd.server.application.dto.ProjectDetailsResponse
 import pknu.vcd.server.application.dto.ProjectFileUrl
 import pknu.vcd.server.application.dto.ProjectRequest
 import pknu.vcd.server.domain.Category
 import pknu.vcd.server.domain.Project
-import pknu.vcd.server.domain.ProjectRepository
-import pknu.vcd.server.domain.dto.ProjectSummaryDto
+import pknu.vcd.server.domain.repository.ProjectRepository
+import pknu.vcd.server.infra.cache.CacheNames
 
 @Service
 class ProjectService(
@@ -20,24 +18,13 @@ class ProjectService(
     private val projectFileService: ProjectFileService,
 ) {
 
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = ["project-summaries"])
-    fun getAllProjectSummaries(): List<ProjectSummaryDto> {
-        return projectRepository.findAllProjectSummaries()
-    }
-
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = ["product-details"], key = "#projectId")
-    fun getProjectDetails(projectId: Long): ProjectDetailsResponse {
-        val project = projectRepository.findByIdOrNull(projectId)
-            ?: throw IllegalArgumentException("존재하지 않는 프로젝트입니다.")
-        val projectFiles = projectFileService.getByProjectId(projectId)
-
-        return ProjectDetailsResponse.of(project = project, projectFiles = projectFiles)
-    }
-
     @Transactional
-    @CacheEvict(cacheNames = ["project-summaries"])
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.PROJECT_PUBLIC_SUMMARIES], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.PROJECT_ADMIN_SUMMARIES], allEntries = true)
+        ]
+    )
     fun createProject(request: ProjectRequest): Long {
         validateDisplayOrder(request.fileUrls)
 
@@ -61,8 +48,9 @@ class ProjectService(
     @Transactional
     @Caching(
         evict = [
-            CacheEvict(cacheNames = ["project-summaries"], allEntries = true),
-            CacheEvict(cacheNames = ["product-details"], key = "#projectId")
+            CacheEvict(cacheNames = [CacheNames.PROJECT_PUBLIC_SUMMARIES], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.PROJECT_ADMIN_SUMMARIES], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.PROJECT_DETAILS], key = "#projectId")
         ]
     )
     fun updateProject(request: ProjectRequest, projectId: Long) {

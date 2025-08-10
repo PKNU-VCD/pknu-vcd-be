@@ -1,4 +1,4 @@
-package pknu.vcd.server.infra
+package pknu.vcd.server.infra.s3
 
 import org.springframework.stereotype.Component
 import pknu.vcd.server.application.PresignedUrlProviderPort

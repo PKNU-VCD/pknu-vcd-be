@@ -1,4 +1,4 @@
-package pknu.vcd.server.api
+package pknu.vcd.server.infra.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

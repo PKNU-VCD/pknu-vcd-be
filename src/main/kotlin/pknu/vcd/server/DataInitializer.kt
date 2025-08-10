@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import pknu.vcd.server.domain.Admin
-import pknu.vcd.server.domain.AdminRepository
+import pknu.vcd.server.domain.repository.AdminRepository
 
 @Component
 class DataInitializer(

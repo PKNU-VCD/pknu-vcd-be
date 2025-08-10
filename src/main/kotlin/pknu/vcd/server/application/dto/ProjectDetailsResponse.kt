@@ -5,7 +5,7 @@ import pknu.vcd.server.domain.Project
 import pknu.vcd.server.domain.ProjectFile
 
 data class ProjectDetailsResponse(
-    val id: Long,
+    val projectId: Long,
     val designerEmail: String,
     val designerName: DesignerName,
     val projectName: ProjectName,
@@ -39,7 +39,7 @@ data class ProjectDetailsResponse(
 
         fun of(project: Project, projectFiles: List<ProjectFile>): ProjectDetailsResponse {
             return ProjectDetailsResponse(
-                id = project.id,
+                projectId = project.id,
                 designerEmail = project.designerEmail,
                 designerName = DesignerName(
                     kr = project.designerNameKr,
