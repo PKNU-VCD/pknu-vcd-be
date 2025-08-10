@@ -6,5 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class AwsS3Properties(
     val accessKey: String,
     val secretKey: String,
+    val bucket: String,
+    val endpoint: String,
     val region: String,
 )

@@ -5,30 +5,32 @@ import jakarta.persistence.*
 @Entity
 class Project(
     @Column(nullable = false)
-    val designerName: String,
+    var designerEmail: String,
 
     @Column(nullable = false)
-    val designerEmail: String,
+    var designerNameKr: String,
 
     @Column(nullable = false)
-    val designerNameKr: String,
-
-    val designerNameEn: String,
+    var designerNameEn: String,
 
     @Column(nullable = false)
-    val projectNameKr: String,
+    var projectNameKr: String,
 
-    val projectNameEn: String,
-
-    @Column(nullable = false)
-    val descriptionKr: String,
-
-    val descriptionEn: String,
+    @Column
+    var projectNameEn: String?,
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    val category: Category,
-)  : AuditableEntity() {
+    var descriptionKr: String,
+
+    @Column
+    var descriptionEn: String?,
+
+    @Column(nullable = false)
+    var thumbnailUrl: String,
+
+    @Column(nullable = false)
+    var categoriesString: String,
+) : AuditableEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

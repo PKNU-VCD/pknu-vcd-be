@@ -1,8 +1,12 @@
 package pknu.vcd.server.application
 
-import pknu.vcd.server.application.dto.PresignedUrl
+import pknu.vcd.server.application.dto.PresignedUrlResponse
 
 fun interface PresignedUrlProviderPort {
 
-    operator fun invoke(): PresignedUrl
+    operator fun invoke(
+        fileName: String,
+        fileSize: Long,
+        contentType: String,
+    ): PresignedUrlResponse
 }

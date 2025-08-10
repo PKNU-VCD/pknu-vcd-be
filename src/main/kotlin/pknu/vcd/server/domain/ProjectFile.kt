@@ -3,18 +3,15 @@ package pknu.vcd.server.domain
 import jakarta.persistence.*
 
 @Entity
-class ProjectImage(
+class ProjectFile(
     @Column(nullable = false)
-    val filePath: String,
+    val projectId: Long,
 
     @Column(nullable = false)
-    val originalFileName: String,
+    val fileUrl: String,
 
     @Column(nullable = false)
-    val displayOrder: Int,
-
-    @Column(nullable = false)
-    val isThumbnail: Boolean,
+    val order: Int,
 ) : AuditableEntity() {
 
     @Id

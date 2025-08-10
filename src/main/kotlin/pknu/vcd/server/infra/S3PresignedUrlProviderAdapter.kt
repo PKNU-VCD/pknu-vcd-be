@@ -2,25 +2,62 @@ package pknu.vcd.server.infra
 
 import org.springframework.stereotype.Component
 import pknu.vcd.server.application.PresignedUrlProviderPort
-import pknu.vcd.server.application.dto.PresignedUrl
-import software.amazon.awssdk.services.s3.S3Client
+import pknu.vcd.server.application.dto.PresignedUrlResponse
+import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest
+import java.net.URI
+import java.time.Duration
+import java.util.*
 
 @Component
 class S3PresignedUrlProviderAdapter(
+    private val s3Presigner: S3Presigner,
     private val properties: AwsS3Properties,
-    private val s3Client: S3Client,
 ) : PresignedUrlProviderPort {
 
-    override fun invoke(): PresignedUrl {
-        TODO("Not yet implemented")
+    override fun invoke(fileName: String, fileSize: Long, contentType: String): PresignedUrlResponse {
+        val uniqueFileName = generateUniqueFileName(fileName)
+
+        val presignRequest = buildPresignedRequest(uniqueFileName, fileSize, contentType)
+
+        val presignedUrl = s3Presigner.presignPutObject(presignRequest).url().toString()
+        val fileUrl = createFileUrl(uniqueFileName)
+
+        return PresignedUrlResponse(presignedUrl, fileUrl)
     }
 
-    private fun s3Presigner(): S3Presigner {
-        TODO()
-//        return S3Presigner.builder()
-//            .credentialsProvider(s3Client.credentialsProvider())
-//            .region(s3Client.region())
-//            .build()
+    private fun generateUniqueFileName(fileName: String): String {
+        val fileExtension = fileName.substringAfterLast('.', "")
+        val uniqueId = UUID.randomUUID().toString().replace("-", "")
+
+        return if (fileExtension.isNotEmpty()) {
+            "$uniqueId.$fileExtension"
+        } else {
+            uniqueId
+        }
+    }
+
+    private fun createFileUrl(fileName: String): String {
+        val domain = URI.create(properties.endpoint)
+
+        return domain.resolve(fileName).toString()
+    }
+
+    private fun buildPresignedRequest(fileName: String, fileSize: Long, contentType: String): PutObjectPresignRequest {
+        val requestBuilder = PutObjectRequest.builder()
+            .bucket(properties.bucket)
+            .contentLength(fileSize)
+            .contentType(contentType)
+            .key(fileName)
+
+        return PutObjectPresignRequest.builder()
+            .signatureDuration(PRESIGNED_URL_EXPIRATION)
+            .putObjectRequest(requestBuilder.build())
+            .build()
+    }
+
+    companion object {
+        private val PRESIGNED_URL_EXPIRATION = Duration.ofMinutes(10)
     }
 }

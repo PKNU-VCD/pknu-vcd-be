@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 import pknu.vcd.server.api.dto.CreateGuestBookEntryWebRequest
 import pknu.vcd.server.application.GuestBookService
 import pknu.vcd.server.application.dto.CreateGuestBookEntryResponse
-import pknu.vcd.server.domain.GuestBookEntryDto
+import pknu.vcd.server.domain.dto.GuestBookEntryDto
 
 @RestController
 class GuestBookController(

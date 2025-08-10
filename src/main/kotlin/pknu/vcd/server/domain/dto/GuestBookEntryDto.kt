@@ -1,4 +1,4 @@
-package pknu.vcd.server.domain
+package pknu.vcd.server.domain.dto
 
 import java.time.LocalDateTime
 
