@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Query
 
 interface ProjectFileRepository : JpaRepository<ProjectFile, Long> {
 
-    @Modifying(clearAutomatically = true)
+    @Modifying // clearAutomatically = true 은 Project 변경 감지를 위해 주석 처리
     @Query("DELETE FROM ProjectFile projectFile WHERE projectFile.projectId = :projectId")
     fun deleteByProjectId(projectId: Long)
 
-    fun findAllByProjectIdOrderByOrderAsc(projectId: Long): List<ProjectFile>
+    fun findAllByProjectIdOrderByDisplayOrderAsc(projectId: Long): List<ProjectFile>
 }

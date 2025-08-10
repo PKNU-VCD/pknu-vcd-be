@@ -5,8 +5,9 @@ import org.springframework.transaction.annotation.Transactional
 import pknu.vcd.server.application.dto.CreateGuestBookEntryRequest
 import pknu.vcd.server.application.dto.CreateGuestBookEntryResponse
 import pknu.vcd.server.domain.GuestBookEntry
-import pknu.vcd.server.domain.dto.GuestBookEntryDto
 import pknu.vcd.server.domain.GuestBookEntryRepository
+import pknu.vcd.server.domain.dto.GuestBookEntryDto
+import java.time.Duration
 import java.time.LocalDateTime
 
 @Service
@@ -37,11 +38,13 @@ class GuestBookService(
         val now = LocalDateTime.now()
         val recent = guestBookEntryRepository.findTopByClientIpAndCreatedAtAfterOrderByCreatedAtDesc(
             clientIp = clientIp,
-            createdAt = now.minusMinutes(3)
+            createdAt = now.minusSeconds(60)
         )
 
         if (recent != null) {
-            throw IllegalStateException("You can only post once every 3 minutes. Please try again later.")
+            val elapsedSeconds = Duration.between(recent.createdAt, now).seconds
+            val remainingSeconds = (60 - elapsedSeconds).coerceAtLeast(0)
+            throw IllegalStateException("방명록 작성은 1분에 한 번만 가능합니다. 남은 시간: ${remainingSeconds}초")
         }
     }
 }

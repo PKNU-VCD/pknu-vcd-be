@@ -28,6 +28,6 @@ data class Description(
 )
 
 data class ProjectFileUrl(
-    val order: Int,
+    val displayOrder: Int,
     val url: String,
 )

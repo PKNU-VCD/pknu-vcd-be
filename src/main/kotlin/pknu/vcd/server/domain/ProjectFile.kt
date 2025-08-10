@@ -11,7 +11,7 @@ class ProjectFile(
     val fileUrl: String,
 
     @Column(nullable = false)
-    val order: Int,
+    val displayOrder: Int,
 ) : AuditableEntity() {
 
     @Id

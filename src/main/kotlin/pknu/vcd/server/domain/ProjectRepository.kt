@@ -12,7 +12,8 @@ interface ProjectRepository : JpaRepository<Project, Long> {
             project.id,
             project.designerNameKr,
             project.projectNameKr,
-            project.createdAt
+            project.createdAt,
+            project.updatedAt
         )
         FROM Project project
         ORDER BY project.createdAt DESC

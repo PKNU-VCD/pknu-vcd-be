@@ -7,4 +7,5 @@ data class ProjectSummaryDto(
     val designerName: String,
     val projectName: String,
     val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
 )

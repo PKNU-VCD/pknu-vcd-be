@@ -21,6 +21,7 @@ class GuestBookController(
         httpServletRequest: HttpServletRequest,
     ): CreateGuestBookEntryResponse {
         val clientIp = extractClientIp(httpServletRequest)
+        println(clientIp)
         val appRequest = request.toAppRequest(clientIp)
 
         return guestBookService.createGuestBookEntry(appRequest)

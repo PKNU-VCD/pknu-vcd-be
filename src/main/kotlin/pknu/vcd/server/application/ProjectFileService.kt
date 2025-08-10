@@ -17,7 +17,13 @@ class ProjectFileService(
 
     @Transactional
     fun createProjectFiles(projectId: Long, fileUrls: List<ProjectFileUrl>) {
-        val projectFiles = fileUrls.map { ProjectFile(projectId = projectId, fileUrl = it.url, order = it.order) }
+        val projectFiles = fileUrls.map {
+            ProjectFile(
+                projectId = projectId,
+                fileUrl = it.url,
+                displayOrder = it.displayOrder
+            )
+        }
         projectFileRepository.saveAll(projectFiles)
     }
 
@@ -28,7 +34,7 @@ class ProjectFileService(
 
     @Transactional(readOnly = true)
     fun getByProjectId(projectId: Long): List<ProjectFile> {
-        return projectFileRepository.findAllByProjectIdOrderByOrderAsc(projectId)
+        return projectFileRepository.findAllByProjectIdOrderByDisplayOrderAsc(projectId)
     }
 
     fun createPresignedUrl(request: ProjectPresignedUrlRequest): PresignedUrlResponse {

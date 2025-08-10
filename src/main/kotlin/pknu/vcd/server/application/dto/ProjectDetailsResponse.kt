@@ -31,7 +31,7 @@ data class ProjectDetailsResponse(
     )
 
     data class ProjectFileInfo(
-        val order: Int,
+        val displayOrder: Int,
         val url: String,
     )
 
@@ -56,7 +56,7 @@ data class ProjectDetailsResponse(
                 thumbnailUrl = project.thumbnailUrl,
                 categories = Category.fromCategoriesString(project.categoriesString),
                 files = projectFiles.map { projectFile ->
-                    ProjectFileInfo(order = projectFile.order, url = projectFile.fileUrl)
+                    ProjectFileInfo(displayOrder = projectFile.displayOrder, url = projectFile.fileUrl)
                 }
             )
         }

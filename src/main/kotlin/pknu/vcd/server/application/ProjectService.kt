@@ -1,5 +1,8 @@
 package pknu.vcd.server.application
 
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,11 +21,13 @@ class ProjectService(
 ) {
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["project-summaries"])
     fun getAllProjectSummaries(): List<ProjectSummaryDto> {
         return projectRepository.findAllProjectSummaries()
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["product-details"], key = "#projectId")
     fun getProjectDetails(projectId: Long): ProjectDetailsResponse {
         val project = projectRepository.findByIdOrNull(projectId)
             ?: throw IllegalArgumentException("존재하지 않는 프로젝트입니다.")
@@ -32,8 +37,9 @@ class ProjectService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["project-summaries"])
     fun createProject(request: ProjectRequest): Long {
-        validateOrder(request.fileUrls)
+        validateDisplayOrder(request.fileUrls)
 
         val project = Project(
             designerEmail = request.designerEmail,
@@ -46,39 +52,47 @@ class ProjectService(
             thumbnailUrl = request.thumbnailUrl,
             categoriesString = Category.toCategoriesString(request.categories)
         )
-
+        val savedProject = projectRepository.save(project)
         projectFileService.createProjectFiles(projectId = project.id, fileUrls = request.fileUrls)
 
-        return projectRepository.save(project).id
+        return savedProject.id
     }
 
     @Transactional
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = ["project-summaries"], allEntries = true),
+            CacheEvict(cacheNames = ["product-details"], key = "#projectId")
+        ]
+    )
     fun updateProject(request: ProjectRequest, projectId: Long) {
         val project = projectRepository.findByIdOrNull(projectId)
             ?: throw IllegalArgumentException("존재하지 않는 프로젝트입니다.")
 
-        validateOrder(request.fileUrls)
+        validateDisplayOrder(request.fileUrls)
 
-        project.designerEmail = request.designerEmail
-        project.designerNameKr = request.designerName.kr
-        project.designerNameEn = request.designerName.en
-        project.projectNameKr = request.projectName.kr
-        project.projectNameEn = request.projectName.en
-        project.descriptionKr = request.description.kr
-        project.descriptionEn = request.description.en
-        project.thumbnailUrl = request.thumbnailUrl
-        project.categoriesString = Category.toCategoriesString(request.categories)
+        project.apply {
+            designerEmail = request.designerEmail
+            designerNameKr = request.designerName.kr
+            designerNameEn = request.designerName.en
+            projectNameKr = request.projectName.kr
+            projectNameEn = request.projectName.en
+            descriptionKr = request.description.kr
+            descriptionEn = request.description.en
+            thumbnailUrl = request.thumbnailUrl
+            categoriesString = Category.toCategoriesString(request.categories)
+        }
 
         projectFileService.deleteAllByProjectId(projectId)
         projectFileService.createProjectFiles(projectId, request.fileUrls)
     }
 
-    private fun validateOrder(fileUrls: List<ProjectFileUrl>) {
-        val orders = fileUrls.map { it.order }.sorted()
-        if (orders.isEmpty()) return
+    private fun validateDisplayOrder(fileUrls: List<ProjectFileUrl>) {
+        val displayOrders = fileUrls.map { it.displayOrder }.sorted()
+        if (displayOrders.isEmpty()) return
 
-        if (orders.first() != 1 || orders.last() != orders.size) {
-            throw IllegalArgumentException("order 값은 1부터 시작하여 순차적으로 증가해야 합니다.")
+        if (displayOrders.first() != 1 || displayOrders.last() != displayOrders.size) {
+            throw IllegalArgumentException("displayOrder 값은 1부터 시작하여 순차적으로 증가해야 합니다.")
         }
     }
 }
