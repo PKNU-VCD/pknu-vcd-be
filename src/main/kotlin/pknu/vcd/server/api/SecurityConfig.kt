@@ -63,11 +63,11 @@ class SecurityConfig(
             }
             .exceptionHandling {
                 it
-                    .authenticationEntryPoint { request, response, authException ->
+                    .authenticationEntryPoint { _, response, authException ->
                         response.status = 401
                         response.writer.write("Unauthorized: ${authException.message}")
                     }
-                    .accessDeniedHandler { request, response, accessDeniedException ->
+                    .accessDeniedHandler { _, response, accessDeniedException ->
                         response.status = 403
                         response.writer.write("Forbidden: ${accessDeniedException.message}")
                     }

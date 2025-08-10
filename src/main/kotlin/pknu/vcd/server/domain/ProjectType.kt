@@ -1,4 +1,4 @@
-package pknu.vcd.server.core
+package pknu.vcd.server.domain
 
 enum class ProjectType {
 
