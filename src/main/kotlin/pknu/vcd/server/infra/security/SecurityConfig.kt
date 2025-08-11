@@ -87,12 +87,16 @@ class SecurityConfig(
             }
             .exceptionHandling {
                 it
-                    .authenticationEntryPoint { _, response, _ ->
+                    .authenticationEntryPoint { _, response, ex ->
+                        log.warn("[Authentication Entry Point] {}", ex.message, ex)
+
                         val errorType = ErrorType.UNAUTHORIZED
                         val apiResponse = ApiResponse.error(errorType)
                         writeResponse(response, errorType.status, objectMapper.writeValueAsString(apiResponse))
                     }
-                    .accessDeniedHandler { _, response, _ ->
+                    .accessDeniedHandler { _, response, ex ->
+                        log.warn("[Access Denied Handler] {}", ex.message, ex)
+
                         val errorType = ErrorType.FORBIDDEN
                         val apiResponse = ApiResponse.error(errorType)
                         writeResponse(response, errorType.status, objectMapper.writeValueAsString(apiResponse))

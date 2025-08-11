@@ -6,6 +6,10 @@
     <property name="LOG_PATTERN_FULL"
               value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} | %clr([%thread]){faint} | %clr(%-5level) | %clr(%-40.40logger{39}){cyan} | ip=%X{clientIp} | %msg%n%wEx"/>
 
+    <!--  short - 5줄  -->
+    <property name="LOG_PATTERN_SHORT"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} | %clr([%thread]){faint} | %clr(%-5level) | %clr(%-40.40logger{39}){cyan} | ip=%X{clientIp} | %msg%n%wEx{5}"/>
+
     <property name="LOG_PATTERN_PLAIN"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} | [%thread] | %-5level | %-40.40logger{39} | ip=%X{clientIp} | %msg%n%wEx"/>
 
@@ -30,6 +34,13 @@
     </springProfile>
 
     <springProfile name="prod">
+        <appender name="CONSOLE_SHORT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN_SHORT}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>logs/pknu-vcd-server.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -50,6 +61,7 @@
 
         <root level="INFO">
             <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE_SHORT"/>
         </root>
     </springProfile>
 
