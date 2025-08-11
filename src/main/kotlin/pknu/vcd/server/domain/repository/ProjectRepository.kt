@@ -32,7 +32,7 @@ interface ProjectRepository : JpaRepository<Project, Long> {
             project.updatedAt
         )
         FROM Project project
-        ORDER BY project.createdAt DESC
+        ORDER BY project.updatedAt DESC
         """
     )
     fun findAllProjectAdminSummaries(): List<ProjectAdminSummaryDto>

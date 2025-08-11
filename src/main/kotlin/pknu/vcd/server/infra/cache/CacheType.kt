@@ -36,6 +36,13 @@ enum class CacheType(
         initialCapacity = 50,
         maximumSize = 500,
         expireAfterWrite = Duration.ofSeconds(30)
+    ),
+
+    GUEST_BOOKS(
+        cacheName = CacheNames.GUEST_BOOKS,
+        initialCapacity = 1,
+        maximumSize = 1,
+        expireAfterAccess = Duration.ofDays(3)
     )
     ;
 }
@@ -46,4 +53,5 @@ object CacheNames {
     const val PROJECT_ADMIN_SUMMARIES = "project-admin-summaries"
     const val PROJECT_DETAILS = "project-details"
     const val GUEST_BOOK_RATE_LIMITER = "guest-book-rate-limiter"
+    const val GUEST_BOOKS = "guest-books"
 }

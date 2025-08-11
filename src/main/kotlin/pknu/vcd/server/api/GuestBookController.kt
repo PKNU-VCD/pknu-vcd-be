@@ -1,12 +1,13 @@
 package pknu.vcd.server.api
 
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import pknu.vcd.server.api.response.ApiResponse
 import pknu.vcd.server.application.GuestBookRateLimiter
 import pknu.vcd.server.application.GuestBookService
+import pknu.vcd.server.application.dto.BannedGuestBookResponse
 import pknu.vcd.server.application.dto.CreateGuestBookRequest
 import pknu.vcd.server.application.dto.CreateGuestBookResponse
 import pknu.vcd.server.domain.dto.GuestBookSummaryDto
@@ -18,19 +19,23 @@ class GuestBookController(
 ) {
 
     @GetMapping("/guestbooks")
-    fun getGuestBooks(): List<GuestBookSummaryDto> {
-        return guestBookService.getGuestBooks()
+    fun getGuestBooks(): ResponseEntity<ApiResponse<List<GuestBookSummaryDto>>> {
+        val response = guestBookService.getGuestBooks()
+
+        return ResponseEntity.ok(ApiResponse.success(response))
     }
 
     @PostMapping("/guestbooks")
     fun createGuestBook(
-        @RequestBody request: CreateGuestBookRequest,
+        @RequestBody @Valid request: CreateGuestBookRequest,
         httpServletRequest: HttpServletRequest,
-    ): CreateGuestBookResponse {
+    ): ResponseEntity<ApiResponse<CreateGuestBookResponse>> {
         val clientIp = extractClientIp(httpServletRequest)
         guestBookRateLimiter.check(clientIp)
 
-        return guestBookService.createGuestBook(request, clientIp)
+        val response = guestBookService.createGuestBook(request = request, clientIp = clientIp)
+
+        return ResponseEntity.ok(ApiResponse.success(response))
     }
 
     private fun extractClientIp(request: HttpServletRequest): String {

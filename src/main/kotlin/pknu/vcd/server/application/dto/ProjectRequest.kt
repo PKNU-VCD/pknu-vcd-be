@@ -1,6 +1,8 @@
 package pknu.vcd.server.application.dto
 
 import pknu.vcd.server.domain.Category
+import pknu.vcd.server.domain.Project
+import pknu.vcd.server.domain.dto.ProjectUpdateCommand
 
 data class ProjectRequest(
     val designerEmail: String,
@@ -9,25 +11,39 @@ data class ProjectRequest(
     val description: Description,
     val categories: List<Category>,
     val thumbnailUrl: String,
-    val fileUrls: List<ProjectFileUrl>,
-)
+    val fileUrls: List<ProjectFileInfo>,
+) {
 
-data class DesignerName(
-    val kr: String,
-    val en: String,
-)
+    fun toProject(): Project {
+        val categoriesString = Category.toCategoriesString(this.categories)
 
-data class ProjectName(
-    val kr: String,
-    val en: String?,
-)
+        return Project(
+            designerEmail = designerEmail,
+            designerNameKr = designerName.kr,
+            designerNameEn = designerName.en,
+            projectNameKr = projectName.kr,
+            projectNameEn = projectName.en,
+            descriptionKr = description.kr,
+            descriptionEn = description.en,
+            thumbnailUrl = thumbnailUrl,
+            categoriesString = categoriesString
+        )
+    }
 
-data class Description(
-    val kr: String,
-    val en: String?,
-)
+    fun toUpdateCommand(): ProjectUpdateCommand {
+        val categoriesString = Category.toCategoriesString(this.categories)
 
-data class ProjectFileUrl(
-    val displayOrder: Int,
-    val url: String,
-)
+        return ProjectUpdateCommand(
+            designerEmail = designerEmail,
+            designerNameKr = designerName.kr,
+            designerNameEn = designerName.en,
+            projectNameKr = projectName.kr,
+            projectNameEn = projectName.en,
+            descriptionKr = description.kr,
+            descriptionEn = description.en,
+            thumbnailUrl = thumbnailUrl,
+            categoriesString = categoriesString
+        )
+    }
+}
+

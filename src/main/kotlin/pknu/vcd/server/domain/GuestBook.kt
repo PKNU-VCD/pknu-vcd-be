@@ -11,10 +11,14 @@ class GuestBook(
     val clientIp: String,
 
     @Column(nullable = false)
-    val banned: Boolean = false,
+    var banned: Boolean = false,
 ) : AuditableEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
+
+    fun ban() {
+        this.banned = true
+    }
 }

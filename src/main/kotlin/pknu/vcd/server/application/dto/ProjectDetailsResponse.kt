@@ -15,29 +15,14 @@ data class ProjectDetailsResponse(
     val files: List<ProjectFileInfo>,
 ) {
 
-    data class DesignerName(
-        val kr: String,
-        val en: String,
-    )
-
-    data class ProjectName(
-        val kr: String,
-        val en: String?,
-    )
-
-    data class Description(
-        val kr: String,
-        val en: String?,
-    )
-
-    data class ProjectFileInfo(
-        val displayOrder: Int,
-        val url: String,
-    )
-
     companion object {
 
         fun of(project: Project, projectFiles: List<ProjectFile>): ProjectDetailsResponse {
+            val categories = Category.fromCategoriesString(project.categoriesString)
+            val files = projectFiles.map {
+                ProjectFileInfo(displayOrder = it.displayOrder, url = it.fileUrl)
+            }
+
             return ProjectDetailsResponse(
                 projectId = project.id,
                 designerEmail = project.designerEmail,
@@ -54,10 +39,8 @@ data class ProjectDetailsResponse(
                     en = project.descriptionEn
                 ),
                 thumbnailUrl = project.thumbnailUrl,
-                categories = Category.fromCategoriesString(project.categoriesString),
-                files = projectFiles.map { projectFile ->
-                    ProjectFileInfo(displayOrder = projectFile.displayOrder, url = projectFile.fileUrl)
-                }
+                categories = categories,
+                files = files
             )
         }
     }

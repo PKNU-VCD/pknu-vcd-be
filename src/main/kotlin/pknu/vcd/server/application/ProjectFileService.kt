@@ -2,7 +2,7 @@ package pknu.vcd.server.application
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import pknu.vcd.server.application.dto.ProjectFileUrl
+import pknu.vcd.server.application.dto.ProjectFileInfo
 import pknu.vcd.server.domain.ProjectFile
 import pknu.vcd.server.domain.repository.ProjectFileRepository
 
@@ -17,7 +17,7 @@ class ProjectFileService(
     }
 
     @Transactional
-    fun createProjectFiles(projectId: Long, fileUrls: List<ProjectFileUrl>) {
+    fun createProjectFiles(projectId: Long, fileUrls: List<ProjectFileInfo>) {
         val projectFiles = fileUrls.map {
             ProjectFile(
                 projectId = projectId,

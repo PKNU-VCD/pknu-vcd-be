@@ -21,4 +21,8 @@ abstract class AuditableEntity {
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.MIN
         protected set
+
+    fun updateTimestamps() {
+        this.updatedAt = LocalDateTime.now()
+    }
 }

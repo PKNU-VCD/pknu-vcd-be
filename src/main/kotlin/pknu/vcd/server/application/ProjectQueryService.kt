@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import pknu.vcd.server.application.dto.ProjectDetailsResponse
 import pknu.vcd.server.application.dto.ProjectPublicSummaryResponse
+import pknu.vcd.server.application.exception.ProjectNotFoundException
 import pknu.vcd.server.domain.Category
 import pknu.vcd.server.domain.dto.ProjectAdminSummaryDto
 import pknu.vcd.server.domain.repository.ProjectRepository
@@ -43,7 +44,7 @@ class ProjectQueryService(
     @Cacheable(cacheNames = [CacheNames.PROJECT_DETAILS], key = "#projectId")
     fun getProjectDetails(projectId: Long): ProjectDetailsResponse {
         val project = projectRepository.findByIdOrNull(projectId)
-            ?: throw IllegalArgumentException("존재하지 않는 프로젝트입니다.")
+            ?: throw ProjectNotFoundException(projectId)
         val projectFiles = projectFileService.getByProjectId(projectId)
 
         return ProjectDetailsResponse.of(project = project, projectFiles = projectFiles)

@@ -14,7 +14,7 @@ class UserDetailsServiceImpl(
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user = adminRepository.findByUsername(username)
-            ?: throw UsernameNotFoundException("User not found with username: $username")
+            ?: throw UsernameNotFoundException("존재하지 않는 계정입니다.")
 
         return User.builder()
             .username(user.username)

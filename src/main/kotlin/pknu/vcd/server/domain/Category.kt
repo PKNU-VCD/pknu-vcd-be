@@ -11,6 +11,7 @@ enum class Category {
     ;
 
     companion object {
+
         fun fromCategoriesString(categoriesString: String): List<Category> {
             return categoriesString.split(",").map { valueOf(it) }.toList()
         }
