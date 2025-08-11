@@ -1,6 +1,7 @@
 .env.*
 .env
 logs/
+.DS_Store
 
 HELP.md
 .gradle
