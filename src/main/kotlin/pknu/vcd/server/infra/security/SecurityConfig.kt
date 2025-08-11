@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.session.SessionAuthenticationException
 import org.springframework.security.web.session.HttpSessionEventPublisher
 import org.springframework.web.cors.CorsConfiguration
@@ -41,6 +42,8 @@ class SecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        val clientIpLoggingFilter = ClientIpLoggingFilter()
+
         http
             .userDetailsService(userDetailsService)
             .csrf { it.disable() }
@@ -95,6 +98,7 @@ class SecurityConfig(
                         writeResponse(response, errorType.status, objectMapper.writeValueAsString(apiResponse))
                     }
             }
+            .addFilterBefore(clientIpLoggingFilter, UsernamePasswordAuthenticationFilter::class.java)
             .sessionManagement {
                 it
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

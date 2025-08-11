@@ -11,6 +11,7 @@ enum class ErrorType(
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 요청입니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없는 요청입니다."),
+    NO_RESOURCE_FOUND(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다."),
 
     // auth
     BAD_CREDENTIALS(HttpStatus.BAD_REQUEST, "아이디 또는 비밀번호가 잘못되었습니다."),

@@ -1,4 +1,4 @@
-package pknu.vcd.server.api
+package pknu.vcd.server.api.guest
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

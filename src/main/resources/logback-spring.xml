@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- 시간 | 스레드 | 레벨 | 로거 | 클라이언트 IP | 메시지 -->
+    <property name="LOG_PATTERN_FULL"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} | %clr([%thread]){faint} | %clr(%-5level) | %clr(%-40.40logger{39}){cyan} | ip=%X{clientIp} | %msg%n%wEx"/>
+
+    <property name="LOG_PATTERN_PLAIN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} | [%thread] | %-5level | %-40.40logger{39} | ip=%X{clientIp} | %msg%n%wEx"/>
+
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN_FULL}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <logger name="pknu.vcd.server" level="DEBUG"/>
+        <logger name="org.springframework.security" level="DEBUG"/>
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
+
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/pknu-vcd-server.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>logs/pknu-vcd-server.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>100MB</maxFileSize>
+                <maxHistory>10</maxHistory>
+                <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN_PLAIN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <logger name="pknu.vcd.server" level="INFO"/>
+        <logger name="org.springframework" level="WARN"/>
+
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>

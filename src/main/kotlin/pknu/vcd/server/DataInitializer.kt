@@ -2,6 +2,7 @@ package pknu.vcd.server
 
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -9,6 +10,7 @@ import pknu.vcd.server.domain.Admin
 import pknu.vcd.server.domain.repository.AdminRepository
 
 @Component
+@Profile("local")
 class DataInitializer(
     private val adminRepository: AdminRepository,
     private val passwordEncoder: PasswordEncoder,

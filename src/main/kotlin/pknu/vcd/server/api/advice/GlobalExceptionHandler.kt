@@ -1,11 +1,14 @@
-package pknu.vcd.server.api
+package pknu.vcd.server.api.advice
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.servlet.resource.NoResourceFoundException
 import pknu.vcd.server.api.response.ApiErrorDetail
 import pknu.vcd.server.api.response.ApiResponse
 import pknu.vcd.server.api.response.ErrorType
@@ -52,6 +55,35 @@ class GlobalExceptionHandler {
 
         val response = ApiResponse.error(ErrorType.BAD_REQUEST, errorDetails)
         return ResponseEntity(response, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<ApiResponse<Unit>> {
+        val cause = ex.cause
+
+        if (cause is InvalidFormatException && cause.targetType.isEnum) {
+            val invalidValue = cause.value
+            val enumType = cause.targetType.simpleName
+            val message = "잘못된 값 '$invalidValue' 가 $enumType 타입에서 허용되지 않습니다."
+
+            val errorDetails = listOf(ApiErrorDetail(field = "enum", message = message))
+            val apiResponse = ApiResponse.error(ErrorType.BAD_REQUEST, errorDetails)
+
+            return ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST)
+        }
+
+        val apiResponse = ApiResponse.error(ErrorType.BAD_REQUEST)
+        return ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(NoResourceFoundException::class)
+    fun handleNoResourceFoundException(e: NoResourceFoundException): ResponseEntity<ApiResponse<Unit>> {
+        log.warn("[NoResourceFoundException] {}", e.message, e)
+
+        val errorType = ErrorType.NO_RESOURCE_FOUND
+        val response = ApiResponse.error(errorType)
+
+        return ResponseEntity(response, errorType.status)
     }
 
     @ExceptionHandler(Exception::class)

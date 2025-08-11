@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS admin
 (
-    id         SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
     username   VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
     created_at TIMESTAMP(6) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS admin
 
 CREATE TABLE IF NOT EXISTS guest_book
 (
-    id         SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
     content    VARCHAR(200) NOT NULL,
     client_ip  VARCHAR(50)  NOT NULL,
     banned     BOOLEAN      NOT NULL DEFAULT FALSE,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS guest_book
 
 CREATE TABLE IF NOT EXISTS project
 (
-    id                SERIAL PRIMARY KEY,
+    id                BIGSERIAL PRIMARY KEY,
     designer_email    VARCHAR(255) NOT NULL,
     designer_name_kr  VARCHAR(255) NOT NULL,
     designer_name_en  VARCHAR(255) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS project
 
 CREATE TABLE IF NOT EXISTS project_file
 (
-    id            SERIAL PRIMARY KEY,
+    id            BIGSERIAL PRIMARY KEY,
     project_id    BIGINT       NOT NULL,
     file_url      VARCHAR(255) NOT NULL,
     display_order INTEGER      NOT NULL,

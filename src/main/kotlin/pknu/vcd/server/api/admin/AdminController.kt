@@ -1,10 +1,8 @@
-package pknu.vcd.server.api
+package pknu.vcd.server.api.admin
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pknu.vcd.server.application.dto.CreateProjectResponse
 import pknu.vcd.server.api.response.ApiResponse
-import pknu.vcd.server.application.GuestBookService
 import pknu.vcd.server.application.PresignedUrlService
 import pknu.vcd.server.application.ProjectQueryService
 import pknu.vcd.server.application.ProjectService
@@ -16,7 +14,6 @@ class AdminController(
     private val projectService: ProjectService,
     private val projectQueryService: ProjectQueryService,
     private val presignedUrlService: PresignedUrlService,
-    private val guestBookService: GuestBookService,
 ) {
 
     @GetMapping("/admin/projects")
@@ -69,15 +66,6 @@ class AdminController(
         @RequestBody request: ProjectPresignedUrlBatchRequest,
     ): ResponseEntity<ApiResponse<List<PresignedUrlResponse>>> {
         val response = presignedUrlService.createPresignedUrls(request)
-
-        return ResponseEntity.ok(ApiResponse.success(response))
-    }
-
-    @PostMapping("/admin/guestbooks/{guestBookId}/ban")
-    fun banGuestBook(
-        @PathVariable guestBookId: Long,
-    ): ResponseEntity<ApiResponse<BannedGuestBookResponse>> {
-        val response = guestBookService.banGuestBook(guestBookId)
 
         return ResponseEntity.ok(ApiResponse.success(response))
     }
