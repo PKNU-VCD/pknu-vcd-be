@@ -15,7 +15,8 @@ enum class ErrorType(
 
     // auth
     BAD_CREDENTIALS(HttpStatus.BAD_REQUEST, "아이디 또는 비밀번호가 잘못되었습니다."),
-    ALREADY_SESSION_EXISTS(HttpStatus.BAD_REQUEST, "이미 로그인된 세션이 존재합니다."),
+    SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, "세션이 만료되었습니다. 다시 로그인해주세요."),
+    SESSION_INVALIDATED(HttpStatus.UNAUTHORIZED, "다른 기기에서 로그인하여 세션이 무효화되었습니다."),
 
     // project
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 프로젝트입니다."),

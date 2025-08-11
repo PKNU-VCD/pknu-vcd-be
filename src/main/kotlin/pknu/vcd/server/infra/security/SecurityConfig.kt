@@ -68,7 +68,6 @@ class SecurityConfig(
 
                         val errorType = when (ex) {
                             is BadCredentialsException -> ErrorType.BAD_CREDENTIALS
-                            is SessionAuthenticationException -> ErrorType.ALREADY_SESSION_EXISTS
                             else -> ErrorType.UNAUTHORIZED
                         }
                         val apiResponse = ApiResponse.error(errorType)
@@ -106,8 +105,20 @@ class SecurityConfig(
             .sessionManagement {
                 it
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    // 세션이 유효하지 않은 경우 (예: 타임아웃)
+                    .invalidSessionStrategy { _, response ->
+                        val errorType = ErrorType.SESSION_EXPIRED
+                        val apiResponse = ApiResponse.error(errorType)
+                        writeResponse(response, errorType.status, objectMapper.writeValueAsString(apiResponse))
+                    }
                     .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true)
+                    .maxSessionsPreventsLogin(false)
+                    // 다른 기기로 인한 세션 만료 처리
+                    .expiredSessionStrategy { event ->
+                        val errorType = ErrorType.SESSION_INVALIDATED
+                        val apiResponse = ApiResponse.error(errorType)
+                        writeResponse(event.response, errorType.status, objectMapper.writeValueAsString(apiResponse))
+                    }
             }
 
         return http.build()

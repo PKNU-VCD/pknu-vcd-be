@@ -21,15 +21,14 @@
             </encoder>
         </appender>
 
-        <logger name="pknu.vcd.server" level="DEBUG"/>
+        <logger name="pknu.vcd.server" level="INFO"/>
         <logger name="org.springframework.security" level="DEBUG"/>
         <logger name="org.springframework" level="INFO"/>
         <logger name="org.hibernate.SQL" level="DEBUG"/>
         <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
 
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE"/>
         </root>
     </springProfile>
 
